@@ -27,7 +27,7 @@ const plugins = [
         template: path.join(__dirname, './'+env_vars.WEBPACK_SOURCE_DIRECTORY+'/index.html')
     }),
     new ExtractTextPlugin({
-        filename: 'styles.css',
+        filename: '[name].css',
         allChunks: true
     })
 ];
@@ -52,6 +52,11 @@ module.exports = {
           },
           {
               test: /\.css$/,
+              exclude: /fontawesome/,
+              loader: ExtractTextPlugin.extract('css-loader')
+          },
+          {
+              test: /fontawesome\-all\.min\.css$/,
               loader: ExtractTextPlugin.extract('css-loader')
           },
           {

@@ -8,7 +8,10 @@ class ProjectList extends React.Component {
                 this.props.projects.map((project,idx) => {
                     return (<div key={`project-${idx}`} className="project container is-fluid">
                         <h5 key={`header-${idx}`}>{project.title}</h5>
-                        <p key={`p-${idx}`} className={"fa "+project.icon}>{project.description}</p>
+                        <p key={`p-${idx}`} className="project-description">
+                            <span className={`fa `+project.icon}></span>
+                            {project.description}
+                        </p>
                         <a key={`link-${idx}`} href="{project.link}">{project.link_text}</a>
                     </div>)
                 })
