@@ -11,6 +11,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 // Load extraction plug-in to bundle class
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
+// Webpack
+const webpack = require('webpack');
 
 
 // Quit if environment variables don't load
@@ -34,6 +36,9 @@ const plugins = [
 
 
 module.exports = {
+  entry: [
+      './src'
+  ],
   // Output files (with cache busting for dev builds)
   output: {
       filename: env_vars.WEBPACK_BUILD_ENV === 'dev' ? '[name].bundle.[hash:6].js' : '[name].bundle.js',
@@ -42,7 +47,11 @@ module.exports = {
   // Define module rules and loaders
   module: {
       rules:[
-          { test: /\.js$/, exclude: /node_modules/, loaders:['babel-loader'] },
+          {
+              test: /\.js$/,
+              exclude: /node_modules/,
+              loaders:['babel-loader']
+          },
           {
               test: /\.scss$/,
               loader: ExtractTextPlugin.extract({
@@ -71,6 +80,7 @@ module.exports = {
   },
   // Verbose output
   devServer: {
+      hot: true,
       quiet: false,
       noInfo: false
   },
