@@ -11,19 +11,45 @@ class D3Chloropleth extends React.Component {
         super(props);
         this.svgRef = React.createRef();
         this.legendRef = React.createRef();
-        this.education_data = '//raw.githubusercontent.com/no-stack-dub-sack/testable-projects-fcc/master/src/data/choropleth_map/for_user_education.json';
-        this.county_data = '//raw.githubusercontent.com/no-stack-dub-sack/testable-projects-fcc/master/src/data/choropleth_map/counties.json';
+        this.education_data_url = '//raw.githubusercontent.com/no-stack-dub-sack/testable-projects-fcc/master/src/data/choropleth_map/for_user_education.json';
+        this.county_data_url = '//raw.githubusercontent.com/no-stack-dub-sack/testable-projects-fcc/master/src/data/choropleth_map/counties.json';
     }
 
     componentDidMount() {
 
         this.path = d3.geoPath();
 
-        fetch(this.education_data).then(res => res.json()).then(education => {
-            fetch(this.county_data).then(county_res => county_res.json()).then(county_json => {
-                  this.drawMap(topojson.feature(county_json,county_json.objects.counties),education);
+        this.fetchCountyData().then(county_data => {
+            this.fetchEducationData().then(education_data => {
+                this.drawMap(topojson.feature(county_data,county_data.objects.counties),education_data);
+            })
+        })
+    }
+
+    fetchCountyData() {
+        if(this.county_data)
+            return new Promise((res,rej) => res(this.county_data));
+
+        return new Promise((res,rej) => {
+            fetch(this.county_data_url).then(county_res => county_res.json()).then(county_data => {
+                  this.county_data = county_data;
+                      if(county_data)
+                        res(county_data);
             });
         })
+    }
+
+    fetchEducationData() {
+        if(this.education_data)
+            return new Promise((res,rej) => res(this.education_data));
+
+        return new Promise((res,rej) => {
+            fetch(this.education_data_url).then(res => res.json()).then(education_data => {
+                this.education_data = education_data;
+                    if(education_data)
+                        res(education_data);
+            })
+        });
     }
 
     drawMap(geojson,education) {
@@ -131,7 +157,7 @@ class D3Chloropleth extends React.Component {
                         <g>
                             {
                                 color.range().map((color_name,i) => {
-                                    return <rect x={i*20} y={0} width="20" height="10" fill={color_name}></rect>
+                                    return <rect key={i} x={i*20} y={0} width="20" height="10" fill={color_name}></rect>
                                 })
                             }
                         </g>
