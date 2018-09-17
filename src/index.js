@@ -7,6 +7,8 @@ import { Switch, BrowserRouter, Route, Link } from 'react-router-dom';
 import {ProjectList} from './components/ProjectList/ProjectList';
 /* ProjectModal component */
 import {ProjectModal} from './components/ProjectModal/ProjectModal';
+/* D3 HOC */
+import {D3Chloropleth} from './components/D3Components/Chloropleth';
 /* Project data file */
 import projects from './data/projects';
 /* Bulma CSS framework */
@@ -22,6 +24,11 @@ ReactDOM.render(
         <Switch>
             <Route exact path='/'>
                 <ProjectList projects={projects} />
+            </Route>
+            <Route path='/d3/'>
+                <Route path='chloropleth'>
+                    <D3Chloropleth />
+                </Route>
             </Route>
             <Route path='/:project_id' render={(props) => <ProjectModal {...props} projects={projects} />} />
         </Switch>
