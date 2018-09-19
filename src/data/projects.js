@@ -38,6 +38,15 @@ export default [
         tags: ['D3.js','JS']
     },
     {
+        short_name: 'd3/heatmap',
+        title: `D3.js Heatmap`,
+        image: '',
+        description: `Using D3.js, I created a heatmap using variance from the mean to show a warming trend over a period of approximately 200 years.`,
+        icon: 'fa-chart-bar',
+        link_text: `${read_more}`,
+        tags: ['D3.js','JS']
+    },
+    {
         short_name: 'click_wordpress',
         title: `Click Summit WordPress Template`,
         image: 'https://user-images.githubusercontent.com/1907805/44010053-1d49fa4c-9e7e-11e8-96c2-f45ba11956b8.png',

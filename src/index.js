@@ -7,8 +7,9 @@ import { Switch, BrowserRouter, Route, Link } from 'react-router-dom';
 import {ProjectList} from './components/ProjectList/ProjectList';
 /* ProjectModal component */
 import {ProjectModal} from './components/ProjectModal/ProjectModal';
-/* D3 HOC */
+/* D3 Components */
 import {D3Chloropleth} from './components/D3Components/Chloropleth';
+import {D3Heatmap} from './components/D3Components/Heatmap';
 /* Project data file */
 import projects from './data/projects';
 /* Bulma CSS framework */
@@ -25,10 +26,11 @@ ReactDOM.render(
             <Route exact path='/'>
                 <ProjectList projects={projects} />
             </Route>
-            <Route path='/d3/'>
-                <Route path='chloropleth'>
-                    <D3Chloropleth />
-                </Route>
+            <Route exact path='/d3/chloropleth'>
+                <D3Chloropleth />
+            </Route>
+            <Route exact path='/d3/heatmap'>
+                <D3Heatmap title="Monthly Global Land-Surface Temperature" description="1753 - 2015: base temperature 8.66℃" />
             </Route>
             <Route path='/:project_id' render={(props) => <ProjectModal {...props} projects={projects} />} />
         </Switch>

@@ -4,6 +4,7 @@ import './D3Chloropleth.scss';
 import fetch from 'isomorphic-fetch';
 import * as topojson from 'topojson-client';
 const d3 = Object.assign({},require('d3'),require('d3-geo'));
+import {event as d3Event} from 'd3';
 
 class D3Chloropleth extends React.Component {
 
@@ -11,6 +12,7 @@ class D3Chloropleth extends React.Component {
         super(props);
         this.svgRef = React.createRef();
         this.legendRef = React.createRef();
+        this.tooltipRef = React.createRef();
         this.education_data_url = '//raw.githubusercontent.com/no-stack-dub-sack/testable-projects-fcc/master/src/data/choropleth_map/for_user_education.json';
         this.county_data_url = '//raw.githubusercontent.com/no-stack-dub-sack/testable-projects-fcc/master/src/data/choropleth_map/counties.json';
     }
@@ -58,6 +60,8 @@ class D3Chloropleth extends React.Component {
           .domain(d3.range(2.6, 75.1, (75.1-2.6)/10))
           .range(d3.schemeBlues[9]);
 
+      const tooltip = d3.select(this.tooltipRef.current);
+
       d3.select(this.svgRef.current)
         .append('g')
         .selectAll("path")
@@ -89,19 +93,19 @@ class D3Chloropleth extends React.Component {
                 return obj.fips == d.id;
               });
               if(result[0]){
-      tooltip.attr('data-education',result[0].bachelorsOrHigher)
-                return result[0]['area_name'] + ', ' + result[0]['state'] + ': ' + result[0].bachelorsOrHigher + '%';
+                  tooltip.attr('data-education',result[0].bachelorsOrHigher)
+                  return result[0]['area_name'] + ', ' + result[0]['state'] + ': ' + result[0].bachelorsOrHigher + '%';
               }
               //could not find a matching fips id in the data
               tooltip.attr('data-education',0)
               return 0
             })
-            tooltip.style("left", (d3.event.pageX + 10) + "px")
-            tooltip.style("top", (d3.event.pageY - 28) + "px")
-            })
-        .on('mouseout',() => tooltip.attr('style','opacity:0'))
-        .attr("fill-opacity", 1)
-        .attr("stroke", "#222")
+                tooltip.style("left", (d3Event.pageX + 10) + "px")
+                tooltip.style("top", (d3Event.pageY - 28) + "px")
+    })
+    .on('mouseout',() => tooltip.attr('style','opacity:0'))
+    .attr("fill-opacity", 1)
+    .attr("stroke", "#222")
     }
 
 
@@ -118,10 +122,7 @@ class D3Chloropleth extends React.Component {
 //   .style("opacity", 0);
 
     let svg = d3
-      .select('body')
-      .append('svg')
-      .attr('width',1000)
-      .attr('height',700);
+      .select(this.svgRef);
 
     /* Color scale */
     const color = d3.scaleThreshold()
@@ -146,8 +147,8 @@ class D3Chloropleth extends React.Component {
 
 
         return (
-            <div>
-                <div id="tooltip" style={{display:'none'}}></div>
+            <div className="open-sans-font">
+                <div id="tooltip" style={{display:'none'}} ref={this.tooltipRef}></div>
                 <h1 id="title">United States Education Level by County</h1>
                 <h2 id="description">Percentage of adults age 25 and older with a bachelor's degree or higher (2010-2014)</h2>
                 <svg width={width} height={height} ref={this.svgRef}></svg>
