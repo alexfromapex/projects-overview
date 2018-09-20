@@ -184,7 +184,7 @@ class D3Heatmap extends React.Component {
 
 
         return (
-            <div>
+            <div className="d3-heatmap">
                 <div id="tooltip" ref={this.tooltipRef}>
                 </div>
                 <section>

@@ -23,9 +23,12 @@ class D3Chloropleth extends React.Component {
 
         this.fetchCountyData().then(county_data => {
             this.fetchEducationData().then(education_data => {
-                this.drawMap(topojson.feature(county_data,county_data.objects.counties),education_data);
+                this.geojson = topojson.feature(county_data,county_data.objects.counties);
+                this.drawMap(education_data);
             })
         })
+
+        window.addEventListener('resize',this.sizeChange)
     }
 
     fetchCountyData() {
@@ -54,11 +57,13 @@ class D3Chloropleth extends React.Component {
         });
     }
 
-    drawMap(geojson,education) {
+    drawMap(education) {
       const path = this.path;
       const color = d3.scaleThreshold()
           .domain(d3.range(2.6, 75.1, (75.1-2.6)/10))
           .range(d3.schemeBlues[9]);
+
+      const geojson = this.geojson;
 
       const tooltip = d3.select(this.tooltipRef.current);
 
@@ -87,7 +92,7 @@ class D3Chloropleth extends React.Component {
           return color(0)
         })
     .on("mouseover", function(d) {
-            tooltip.style("opacity", .9);
+            tooltip.style("opacity", 0.9);
             tooltip.html(function() {
               let result = education.filter(function( obj ) {
                 return obj.fips == d.id;
@@ -108,12 +113,16 @@ class D3Chloropleth extends React.Component {
     .attr("stroke", "#222")
     }
 
+    sizeChange() {
+	    d3.select('svg').attr('viewBox',`0 0 ${document.documentElement.clientWidth*3} ${window.innerHeight*2}`)
+	}
+
 
     render() {
 
 
-    const width = '1000';
-    const height = '700';
+    const width = (document.documentElement.clientWidth*0.8);
+    const height = (window.innerHeight*0.8);
 
 // /* Tooltip */
 // let tooltip = d3.select('body').append("div")
@@ -132,8 +141,6 @@ class D3Chloropleth extends React.Component {
 
     d3.select(this.legendRef.current)
       .append('svg')
-      .attr('width','80%')
-      .attr('height','50%')
       .append('g')
       .selectAll('rect')
       .data(color.range())
@@ -147,11 +154,13 @@ class D3Chloropleth extends React.Component {
 
 
         return (
-            <div className="open-sans-font">
-                <div id="tooltip" style={{display:'none'}} ref={this.tooltipRef}></div>
+            <div className="d3-chloropleth open-sans-font">
+                <div id="tooltip" ref={this.tooltipRef}></div>
                 <h1 id="title">United States Education Level by County</h1>
                 <h2 id="description">Percentage of adults age 25 and older with a bachelor's degree or higher (2010-2014)</h2>
-                <svg width={width} height={height} ref={this.svgRef}></svg>
+                <div id="container">
+                    <svg width={width} height={height} ref={this.svgRef} preserveAspectRatio="xMidYMid meet"></svg>
+                </div>
                 <div id="legend" ref={this.legendRef}>
                     <h1>Level of Education</h1>
                     <svg>

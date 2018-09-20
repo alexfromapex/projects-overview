@@ -1,11 +1,6 @@
-svg {
-    display: block !important;
-    width: 80% !important;
-}
-
-#tooltip {
-    display: none;
-    &.active {
-        display: block;
+.d3-heatmap {
+    svg {
+        display: block !important;
+        width: 80% !important;
     }
 }
