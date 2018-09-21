@@ -13,6 +13,8 @@ class D3Heatmap extends React.Component {
         this.svgRef = React.createRef();
         this.legendRef = React.createRef();
         this.tooltipRef = React.createRef();
+
+        this.calculateRects = this.calculateRects.bind(this);
     }
 
     componentWillReceiveProps(props) {
@@ -25,10 +27,6 @@ class D3Heatmap extends React.Component {
         if(props.padding === undefined) {
             this.props.padding = 30;
         }
-    }
-
-    componentWillMount() {
-
     }
 
     componentDidMount() {
@@ -49,37 +47,38 @@ class D3Heatmap extends React.Component {
 
         /* X Scale */
         this.xScale = d3.scaleBand()
-        .domain(this.dataset.monthlyVariance.map(d => d.year))
-        .range([this.padding, this.svgWidth-this.padding]);
+            .domain(this.dataset.monthlyVariance.map(d => d.year))
+            .range([this.padding, this.svgWidth-this.padding]);
 
         /* Y Scale */
         this.yScale = d3.scaleBand()
-        .domain(Array.from(Array(12).keys()).map(x => x+1))
-        .range([this.padding, this.svgHeight-this.padding]);
+            .domain(Array.from(Array(12).keys()).map(x => x+1))
+            .range([this.padding, this.svgHeight-this.padding]);
 
         /* Y Axis */
 
         d3.select(this.svgRef.current)
-          .append('g')
-          .attr('id','y-axis')
-          .attr('transform','translate('+this.padding+',0)');
+            .append('g')
+            .attr('id','y-axis')
+            .attr('transform','translate('+this.padding+',0)');
 
         /* X-Axis */
 
         d3.select(this.svgRef.current)
-          .append('g')
-          .attr('id','x-axis')
-          .attr('transform','translate(0,'+(this.svgHeight-(this.padding))+')');
+            .append('g')
+            .attr('id','x-axis')
+            .attr('transform','translate(0,'+(this.svgHeight-(this.padding))+')');
 
 
-        this.drawMap();
+        this.calculateRects();
+
 
         /* Window resize handler */
         let debounce = null;
         window.addEventListener('resize',() => {
             clearTimeout(debounce);
             debounce = setTimeout(() => {
-                this.drawMap();
+                this.calculateRects();
                 console.log('window resize');
             },200);
         });
@@ -91,97 +90,80 @@ class D3Heatmap extends React.Component {
         return new Date(data.year,data.month,0);
     }
 
-    drawMap() {
+    calculateRects() {
+
+        let self = this;
 
         /* SVG Width / Height */
-        this.svgWidth = (document.documentElement.clientWidth*0.8);
-        this.svgHeight = (window.innerHeight*0.8);
+        self.svgWidth = (document.documentElement.clientWidth*0.8);
+        self.svgHeight = (window.innerHeight*0.8);
 
         /* X Scale */
-        this.xScale = d3.scaleBand()
-        .domain(this.dataset.monthlyVariance.map(d => d.year))
-        .range([this.padding, this.svgWidth-this.padding]);
+        self.xScale = d3.scaleBand()
+            .domain(self.dataset.monthlyVariance.map(d => d.year))
+            .range([self.padding, self.svgWidth-self.padding]);
 
         // console.log('x range: '+this.xScale.range());
 
         /* Y Scale */
-        this.yScale = d3.scaleBand()
-        .domain(Array.from(Array(12).keys()).map(x => x+1))
-        .range([this.padding, this.svgHeight-this.padding]);
+        self.yScale = d3.scaleBand()
+            .domain(Array.from(Array(12).keys()).map(x => x+1))
+            .range([self.padding, self.svgHeight-self.padding]);
 
         // console.log('y range: '+this.yScale.range());
 
         /* X-Axis ticks rescale */
-        this.xAxis = d3
-        .axisBottom(this.xScale)
-        .tickFormat(year => d3.format('d')(year))
-        .tickValues(this.xScale.domain().filter(d => d%10 === 0))
-        .tickSizeOuter(0);
+        self.xAxis = d3
+            .axisBottom(self.xScale)
+            .tickFormat(year => d3.format('d')(year))
+            .tickValues(self.xScale.domain().filter(d => d%10 === 0))
+            .tickSizeOuter(0);
 
         /* Y-Axis ticks rescale */
-        this.yAxis = d3
-        .axisLeft(this.yScale)
-        .ticks(12)
-        .tickFormat((month) => d3.timeFormat('%B')(new Date(0,month-1)))
-        .tickSizeOuter(0);
+        self.yAxis = d3
+            .axisLeft(self.yScale)
+            .ticks(12)
+            .tickFormat((month) => d3.timeFormat('%B')(new Date(0,month-1)))
+            .tickSizeOuter(0);
 
         let svg = d3
-            .select(this.svgRef.current);
+            .select(self.svgRef.current);
 
-        let xAxisCall = svg
-          .select('#x-axis')
-          .attr('transform','translate(0,'+(this.svgHeight-(this.padding))+')')
-          .call(this.xAxis);
+        /* Draw X-Axis */
+        svg
+            .select('#x-axis')
+            .attr('transform','translate(0,'+(self.svgHeight-(self.padding))+')')
+            .call(self.xAxis);
 
-        let yAxisCall = svg
-          .select('#y-axis')
-          .call(this.yAxis);
+        /* Draw Y-Axis */
+        svg
+            .select('#y-axis')
+            .call(self.yAxis);
 
         /* Map data */
-        let rects = svg
-          .selectAll('rect');
+        self.setState({
+            rects: self.dataset.monthlyVariance.map((d) => {
+              return {
+                x: self.xScale(d.year),
+                y: self.yScale(d.month),
+                width: self.xScale.bandwidth(),
+                height: self.yScale.bandwidth(),
+                fill: self.colorScale(self.dataset.baseTemperature+d.variance),
+                class: 'cell',
+                dataMonth: d.month-1,
+                dataYear: d.year,
+                dataTemp: self.dataset.baseTemperature + d.variance
+              }
+            })
+        });
 
-          rects
-          .data(this.dataset.monthlyVariance)
-          .enter()
-          .append('rect')
-          .attrs({
-            x: d => this.xScale(d.year),
-            y: d => this.yScale(d.month),
-            width: d => this.xScale.bandwidth(),
-            height: d => this.yScale.bandwidth(),
-            fill: d => this.colorScale(this.dataset.baseTemperature+d.variance),
-            class: 'cell'
-          })
-          .attr('class', 'cell')
-          .attr('data-month',function(d){
-            return d.month-1;
-          })
-          .attr('data-year',function(d){
-            return d.year;
-          })
-          .attr('data-temp',function(d){
-            return (this.dataset.baseTemperature + d.variance);
-          })
-          .merge(rects)
-          .attrs({
-              x: d => this.xScale(d.year),
-              y: d => this.yScale(d.month),
-              width: d => this.xScale.bandwidth(),
-              height: d => this.yScale.bandwidth(),
-          })
-          .exit()
-          .remove()
-          // .on('mouseover',tip.show)
-          // .on('mouseout',tip.hide);
     }
 
 
     render() {
-
-          const width = this.props.width || '80%';
-          const height = this.props.height || '800px';
-
+        const height = document.documentElement.clientHeight*0.8;
+        const rects = this.state ? this.state.rects : [];
+        console.log(rects.length);
 
         return (
             <div className="d3-heatmap">
@@ -192,7 +174,9 @@ class D3Heatmap extends React.Component {
                     <h3 id="description">{this.props.description}</h3>
                 </section>
                 <svg ref={this.svgRef} height={height}>
-
+                    <g id="rects">
+                        {rects.map((d,i) => <rect key={i} x={d.x} y={d.y} fill={d.fill} width={d.width} height={d.height} />)}
+                    </g>
                 </svg>
             </div>
         );

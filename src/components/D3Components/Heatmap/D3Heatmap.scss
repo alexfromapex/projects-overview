@@ -1,6 +1,12 @@
 .d3-heatmap {
+    #title,
+    #description {
+        text-align: center;
+    }
     svg {
         display: block !important;
         width: 80% !important;
+        margin-left: auto;
+        margin-right: auto;
     }
 }
