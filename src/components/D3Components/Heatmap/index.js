@@ -154,28 +154,40 @@ class D3Heatmap extends React.Component {
                 dataYear: d.year,
                 dataTemp: self.dataset.baseTemperature + d.variance
               }
-            })
+          }),
+          tooltip: {...this.state.tooltip}
         });
 
+    }
+
+    tooltipShowData(event) {
+        if(event.target.dataset.temp) {
+            this.setState({rects:...this.state.rects,tooltip:{x:event.pageX,y:event.pageY,show:true}});
+        } else {
+            this.setState({rects:...this.state.rects,tooltip:{show:false}});
+        }
     }
 
 
     render() {
         const height = document.documentElement.clientHeight*0.8;
         const rects = this.state ? this.state.rects : [];
+        const tooltipX = this.state ? this.state.tooltip ? this.state.tooltip.x : 0 : 0;
+        const tooltipY = this.state ? this.state.tooltip ? this.state.tooltip.y : 0 : 0;
+        const tooltipShow = this.state ? this.state.tooltip ? this.state.tooltip.show ? 0.9 : 0 : 0 : 0;
         console.log(rects.length);
 
         return (
             <div className="d3-heatmap">
-                <div id="tooltip" ref={this.tooltipRef}>
+                <div id="tooltip" ref={this.tooltipRef} style={{left:tooltipX,top:tooltipY,opacity:tooltipShow}}>
                 </div>
                 <section>
                     <h1 id="title" className="title" ref={this.titleRef}>{this.props.title}</h1>
                     <h3 id="description">{this.props.description}</h3>
                 </section>
                 <svg ref={this.svgRef} height={height}>
-                    <g id="rects">
-                        {rects.map((d,i) => <rect key={i} x={d.x} y={d.y} fill={d.fill} width={d.width} height={d.height} />)}
+                    <g id="rects" onMouseOver={this.tooltipShowData}>
+                        {rects.map((d,i) => <rect key={i} x={d.x} y={d.y} fill={d.fill} width={d.width} height={d.height} data-month={d.dataMonth} data-year={d.dataYear} data-temp={d.dataTemp} />)}
                     </g>
                 </svg>
             </div>

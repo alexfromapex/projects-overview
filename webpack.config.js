@@ -1,72 +1,76 @@
 // Webpack.config.js created by Alex Watson
 
 // Load environment variables
-const _env = require('dotenv').config();
-const env_vars = _env.parsed;
+const dotEnv = require('dotenv').config();
 // Load path
 const path = require('path');
 // Load HTML template plug-in
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 // Load Webpack clean plug-in
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-// Load extraction plug-in to bundle class
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
 // Webpack
 const webpack = require('webpack');
-
-
-// Quit if environment variables don't load
-if(_env.error) {
-    throw _env.error;
-    process.exit(-1);
-}
+// Mini CSS extractor
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 // Create an HTML template file for including bundle code
 const plugins = [
-    new CleanWebpackPlugin(env_vars.WEBPACK_BUILD_DIRECTORY),
+    new CleanWebpackPlugin(process.env.WEBPACK_BUILD_DIRECTORY),
     new HtmlWebpackPlugin({
         filename: 'index.html',
-        template: path.join(__dirname, './'+env_vars.WEBPACK_SOURCE_DIRECTORY+'/index.html')
+        template: path.join(__dirname, './'+process.env.WEBPACK_SOURCE_DIRECTORY+'/index.html')
     }),
-    new ExtractTextPlugin({
-        filename: '[name].css',
-        allChunks: true
+    new MiniCssExtractPlugin({
+        filename: `[name].css`
     })
 ];
 
 
 module.exports = {
+  devServer: {
+    hot: true,
+    quiet: false,
+    noInfo: false,
+    contentBase: path.join(__dirname, process.env.WEBPACK_BUILD_DIRECTORY),
+    compress: true,
+    port: 9000,
+    // mode: process.env.WEBPACK_BUILD_ENV
+  },
   entry: [
       './src'
   ],
   // Output files (with cache busting for dev builds)
   output: {
-      filename: env_vars.WEBPACK_BUILD_ENV === 'dev' ? '[name].bundle.[hash:6].js' : '[name].bundle.js',
-      path: path.resolve(__dirname, env_vars.WEBPACK_BUILD_DIRECTORY)
+      filename: process.env.WEBPACK_BUILD_ENV === 'development' ? '[name].bundle.[hash:6].js' : '[name].bundle.js',
+      path: path.resolve(__dirname, process.env.WEBPACK_BUILD_DIRECTORY)
   },
   // Define module rules and loaders
   module: {
       rules:[
           {
               test: /\.js$/,
-              exclude: /node_modules/,
-              loaders:['babel-loader']
+              exclude: /(node_modules|bower_components)/,
+              use: {
+                  loader: 'babel-loader',
+                  options: {
+                    presets: ['@babel/preset-env','@babel/preset-react'],
+                    plugins: ['@babel/plugin-proposal-object-rest-spread']
+                  }
+              }
           },
           {
               test: /\.scss$/,
-              loader: ExtractTextPlugin.extract({
-                  fallback: 'style-loader',
-                  use: ['css-loader', 'sass-loader'],
-              })
+              use: [
+              'css-loader',
+              'sass-loader'
+              ]
           },
           {
               test: /\.css$/,
-              exclude: /fontawesome/,
-              loader: ExtractTextPlugin.extract('css-loader')
-          },
-          {
-              test: /fontawesome\-all\.min\.css$/,
-              loader: ExtractTextPlugin.extract('css-loader')
+              use: [
+                MiniCssExtractPlugin.loader,
+                'css-loader'
+              ]
           },
           {
               test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
@@ -77,12 +81,6 @@ module.exports = {
               loader: 'file-loader'
           }
       ]
-  },
-  // Verbose output
-  devServer: {
-      hot: true,
-      quiet: false,
-      noInfo: false
   },
   // Include any plug-ins
   plugins
