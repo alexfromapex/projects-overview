@@ -162,9 +162,9 @@ class D3Heatmap extends React.Component {
 
     tooltipShowData(event) {
         if(event.target.dataset.temp) {
-            this.setState({rects:...this.state.rects,tooltip:{x:event.pageX,y:event.pageY,show:true}});
+            this.setState({rects:[...this.state.rects],tooltip:{x:event.pageX,y:event.pageY,show:true}});
         } else {
-            this.setState({rects:...this.state.rects,tooltip:{show:false}});
+            this.setState({rects:[...this.state.rects],tooltip:{show:false}});
         }
     }
 

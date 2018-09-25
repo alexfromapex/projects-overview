@@ -8,6 +8,7 @@
     "@babel/cli": "^7.1.0",
     "@babel/core": "^7.1.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
+    "@babel/plugin-transform-destructuring": "^7.0.0",
     "@babel/preset-env": "^7.1.0",
     "@babel/preset-es2017": "^7.0.0-beta.53",
     "@babel/preset-react": "^7.0.0",
@@ -16,6 +17,7 @@
     "css-loader": "^1.0.0",
     "d3": "^5.7.0",
     "d3-geo": "^1.11.1",
+    "d3-selection-multi": "^1.0.1",
     "dotenv": "^6.0.0",
     "dotenv-webpack": "^1.5.7",
     "file-loader": "^2.0.0",
@@ -39,7 +41,8 @@
     "webpack-dotenv-plugin": "^2.1.0"
   },
   "scripts": {
-    "build": "webpack"
+    "build": "webpack --mode=production",
+    "dev": "webpack-dev-server --mode=development --hot --inline"
   },
   "repository": {
     "type": "git",
