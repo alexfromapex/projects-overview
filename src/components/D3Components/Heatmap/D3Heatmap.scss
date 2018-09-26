@@ -12,4 +12,12 @@
         margin-left: auto;
         margin-right: auto;
     }
+    #tooltip {
+        display: block;
+        position: absolute;
+        background-color: #000;
+        color: #FFF;
+        pointer-events: none;
+        padding: 10px;
+    }
 }

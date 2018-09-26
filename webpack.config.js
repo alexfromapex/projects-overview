@@ -12,6 +12,8 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const webpack = require('webpack');
 // Mini CSS extractor
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+// Minify CSS
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 // Create an HTML template file for including bundle code
 const plugins = [
@@ -21,14 +23,15 @@ const plugins = [
         template: path.join(__dirname, './'+process.env.WEBPACK_SOURCE_DIRECTORY+'/index.html')
     }),
     new MiniCssExtractPlugin({
-        filename: `[name].css`
-    })
+        filename: 'style.css',
+        chunkFilename: '[name].css'
+    }),
+    new OptimizeCssAssetsPlugin()
 ];
 
 
 module.exports = {
   devServer: {
-    hot: true,
     quiet: false,
     noInfo: false,
     contentBase: path.join(__dirname, process.env.WEBPACK_BUILD_DIRECTORY),
@@ -37,12 +40,13 @@ module.exports = {
     // mode: process.env.WEBPACK_BUILD_ENV
   },
   entry: [
-      './src'
+      './src/index.js'
   ],
   // Output files (with cache busting for dev builds)
   output: {
       filename: process.env.WEBPACK_BUILD_ENV === 'development' ? '[name].bundle.[hash:6].js' : '[name].bundle.js',
-      path: path.resolve(__dirname, process.env.WEBPACK_BUILD_DIRECTORY)
+      path: path.resolve(__dirname, process.env.WEBPACK_BUILD_DIRECTORY),
+      publicPath: '/'
   },
   // Define module rules and loaders
   module: {
@@ -55,17 +59,25 @@ module.exports = {
               }
           },
           {
-              test: /\.scss$/,
-              use: [
-              'css-loader',
-              'sass-loader'
-              ]
+            test: /\.scss$/,
+            use: [
+              MiniCssExtractPlugin.loader,
+              {
+                loader: "css-loader",
+                options: {
+                  modules: false,
+                  sourceMap: true,
+                  importLoader: 2
+                }
+              },
+              "sass-loader"
+            ]
           },
           {
               test: /\.css$/,
               use: [
-                MiniCssExtractPlugin.loader,
-                'css-loader'
+                    MiniCssExtractPlugin.loader,
+                    'css-loader'
               ]
           },
           {

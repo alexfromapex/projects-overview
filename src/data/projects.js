@@ -4,7 +4,7 @@ export default [
         short_name: 'target_api',
         title: `Adobe Target API NodeJS Server`,
         image: 'https://user-images.githubusercontent.com/1907805/44010112-740738ae-9e7e-11e8-93cc-c3533ebf8a62.png',
-        description: `As part of Brooks Bell's internal initiative to increase efficiency, I saw great value in creating a piece of software and API interface that would allow easy communication, automation, and interaction with Adobe Target, one of the primary tools in the day-to-day business. I used NodeJS and ExpressJS to create a web application that would authenticate via JSON Web Tokens. The authentication mechanism is handled by the web application, allowing Brooks Bell to quickly and easily utilize the API via numerous pieces of software.`,
+        description: `As part of Brooks Bell's internal initiative to increase efficiency, I created a piece of Node software to interface with the Adobe Marketing Cloud API that allows easy communication, automation, and interaction with Adobe Target, one of the primary tools in the day-to-day business. I used Node and Express to create a web application that authenticates via JSON Web Tokens. The authentication mechanism is handled by the web application, allowing Brooks Bell to quickly and easily utilize the API via numerous pieces of software.`,
         icon:'fa-server',
         link_text: `${read_more}`
     },
@@ -17,16 +17,6 @@ export default [
         link: `https://github.com/alexfromapex/hue-controller`,
         link_text: `${read_more}`,
         tags: ['Python']
-    },
-    {
-        short_name: 'opencv',
-        title: `Computer Vision Experiments`,
-        image: 'https://cloud.githubusercontent.com/assets/1907805/18296880/d59532a4-747a-11e6-9baa-ada2a5475e22.PNG',
-        description: `I've previously held a fellowship in image processing/computer vision at NIEHS. I found a keen interest in image processing algorithms. In my spare time, I have been experimenting the with OpenCV library's Python bindings.`,
-        icon: 'fa-eye',
-        link: `https://github.com/alexfromapex/opencv_experiments`,
-        link_text: `${read_more}`,
-        tags: ['Python','OpenCV']
     },
     {
         short_name: 'd3/chloropleth',
@@ -65,5 +55,15 @@ export default [
         link: `https://alex-fromapex.github.io/resume/`,
         link_text: `${read_more}`,
         tags: ['ReactJS','Webpack','ES6','Git','GitHub']
+    },
+    {
+        short_name: 'opencv',
+        title: `Computer Vision Experiments`,
+        image: 'https://cloud.githubusercontent.com/assets/1907805/18296880/d59532a4-747a-11e6-9baa-ada2a5475e22.PNG',
+        description: `I've previously held a fellowship in image processing/computer vision at NIEHS. I found a keen interest in image processing algorithms. In my spare time, I have been experimenting the with OpenCV library's Python bindings.`,
+        icon: 'fa-eye',
+        link: `https://github.com/alexfromapex/opencv_experiments`,
+        link_text: `${read_more}`,
+        tags: ['Python','OpenCV']
     }
 ];

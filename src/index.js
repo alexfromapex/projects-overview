@@ -2,7 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 /* React Router */
-import { Switch, BrowserRouter, Route, Link } from 'react-router-dom';
+import { Switch, HashRouter, Route, Link } from 'react-router-dom';
 /* ProjectList component */
 import {ProjectList} from './components/ProjectList/ProjectList';
 /* ProjectModal component */
@@ -21,7 +21,7 @@ import './css/fontawesome-all.min.css';
 ReactDOM.render(
     (
     <div>
-    <BrowserRouter>
+    <HashRouter>
         <Switch>
             <Route exact path='/'>
                 <ProjectList projects={projects} />
@@ -34,5 +34,5 @@ ReactDOM.render(
             </Route>
             <Route path='/:project_id' render={(props) => <ProjectModal {...props} projects={projects} />} />
         </Switch>
-    </BrowserRouter>
+    </HashRouter>
     </div>),document.getElementById('projects-app'));
