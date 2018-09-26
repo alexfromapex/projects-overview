@@ -13,22 +13,26 @@ class D3Chloropleth extends React.Component {
         this.svgRef = React.createRef();
         this.legendRef = React.createRef();
         this.tooltipRef = React.createRef();
+
+        this.geojson = {features: []};
+        this.path = d3.geoPath();
+
         this.education_data_url = '//raw.githubusercontent.com/no-stack-dub-sack/testable-projects-fcc/master/src/data/choropleth_map/for_user_education.json';
         this.county_data_url = '//raw.githubusercontent.com/no-stack-dub-sack/testable-projects-fcc/master/src/data/choropleth_map/counties.json';
+
+        this.render = this.render.bind(this);
+        this.fillColor = this.fillColor.bind(this);
     }
 
     componentDidMount() {
 
-        this.path = d3.geoPath();
-
         this.fetchCountyData().then(county_data => {
             this.fetchEducationData().then(education_data => {
                 this.geojson = topojson.feature(county_data,county_data.objects.counties);
-                this.drawMap(education_data);
+                // this.drawMap(education_data);
+                this.forceUpdate();
             })
         })
-
-        window.addEventListener('resize',this.sizeChange)
     }
 
     fetchCountyData() {
@@ -58,65 +62,73 @@ class D3Chloropleth extends React.Component {
     }
 
     drawMap(education) {
-      const path = this.path;
-      const color = d3.scaleThreshold()
-          .domain(d3.range(2.6, 75.1, (75.1-2.6)/10))
-          .range(d3.schemeBlues[9]);
+      // const path = this.path;
+      // const color = d3.scaleThreshold()
+      //     .domain(d3.range(2.6, 75.1, (75.1-2.6)/10))
+      //     .range(d3.schemeBlues[9]);
+      //
+      // const geojson = this.geojson;
+      //
+      // const tooltip = d3.select(this.tooltipRef.current);
 
-      const geojson = this.geojson;
-
-      const tooltip = d3.select(this.tooltipRef.current);
-
-      d3.select(this.svgRef.current)
-        .append('g')
-        .selectAll("path")
-        .data(geojson.features)
-        .enter()
-        .append("path")
-        .attr("d",path)
-        .attr('class','county')
-        .attr('data-fips',d => d.id)
-        .attr("data-education", function(d) {
-            let result = education.filter(obj => obj.fips == d.id);
-            if(result[0]){
-              return result[0].bachelorsOrHigher
-            }
-            return 0
-           })
-        .attr("fill", function(d) {
-            let result = education.filter(obj => obj.fips == d.id);
-            if(result[0]){
-              return color(result[0].bachelorsOrHigher)
-            }
-
-          return color(0)
-        })
-    .on("mouseover", function(d) {
-            tooltip.style("opacity", 0.9);
-            tooltip.html(function() {
-              let result = education.filter(function( obj ) {
-                return obj.fips == d.id;
-              });
-              if(result[0]){
-                  tooltip.attr('data-education',result[0].bachelorsOrHigher)
-                  return result[0]['area_name'] + ', ' + result[0]['state'] + ': ' + result[0].bachelorsOrHigher + '%';
-              }
-              //could not find a matching fips id in the data
-              tooltip.attr('data-education',0)
-              return 0
-            })
-                tooltip.style("left", (d3Event.pageX + 10) + "px")
-                tooltip.style("top", (d3Event.pageY - 28) + "px")
-    })
-    .on('mouseout',() => tooltip.attr('style','opacity:0'))
-    .attr("fill-opacity", 1)
-    .attr("stroke", "#222")
+      // d3.select(this.svgRef.current)
+      //   .append('g')
+      //   .selectAll("path")
+      //   .data(geojson.features)
+      //   .enter()
+      //   .append("path")
+      //   .attr("d",path)
+      //   .attr('class','county')
+      //   .attr('data-fips',d => d.id)
+      //   .attr("data-education", function(d) {
+      //       let result = education.filter(obj => obj.fips == d.id);
+      //       if(result[0]){
+      //         return result[0].bachelorsOrHigher
+      //       }
+      //       return 0
+      //      })
+      //   .attr("fill", function(d) {
+      //       let result = education.filter(obj => obj.fips == d.id);
+      //       if(result[0]){
+      //         return color(result[0].bachelorsOrHigher)
+      //       }
+      //
+      //     return color(0)
+      //   })
+    // .on("mouseover", function(d) {
+    //         tooltip.style("opacity", 0.9);
+    //         tooltip.html(function() {
+    //           let result = education.filter(function( obj ) {
+    //             return obj.fips == d.id;
+    //           });
+    //           if(result[0]){
+    //               tooltip.attr('data-education',result[0].bachelorsOrHigher)
+    //               return result[0]['area_name'] + ', ' + result[0]['state'] + ': ' + result[0].bachelorsOrHigher + '%';
+    //           }
+    //           //could not find a matching fips id in the data
+    //           tooltip.attr('data-education',0)
+    //           return 0
+    //         })
+    //             tooltip.style("left", (d3Event.pageX + 10) + "px")
+    //             tooltip.style("top", (d3Event.pageY - 28) + "px")
+    // })
+    // .on('mouseout',() => tooltip.attr('style','opacity:0'))
+    // .attr("fill-opacity", 1)
+    // .attr("stroke", "#222")
     }
 
-    sizeChange() {
-	    d3.select('svg').attr('viewBox',`0 0 ${document.documentElement.clientWidth*3} ${window.innerHeight*2}`)
-	}
 
+    fillColor(d) {
+        const color = d3.scaleThreshold()
+            .domain(d3.range(2.6, 75.1, (75.1-2.6)/10))
+            .range(d3.schemeBlues[9]);
+        let result = this.education_data.filter(obj => obj.fips == d.id);
+              if(result[0]){
+                return color(result[0].bachelorsOrHigher)
+              }
+
+            return color(0)
+    }
 
     render() {
 
@@ -139,18 +151,18 @@ class D3Chloropleth extends React.Component {
         .range(d3.schemeBlues[9]);
 
 
-    d3.select(this.legendRef.current)
-      .append('svg')
-      .append('g')
-      .selectAll('rect')
-      .data(color.range())
-      .enter()
-      .append('rect')
-      .attr('x',(d,i) => {console.log(i); return i*20})
-      .attr('y',0)
-      .attr('width', 20)
-      .attr('height', 10)
-      .attr('fill',d => d)
+    // d3.select(this.legendRef.current)
+    //   .append('svg')
+    //   .append('g')
+    //   .selectAll('rect')
+    //   .data(color.range())
+    //   .enter()
+    //   .append('rect')
+    //   .attr('x',(d,i) => {return i*20})
+    //   .attr('y',0)
+    //   .attr('width', 20)
+    //   .attr('height', 10)
+    //   .attr('fill',d => d)
 
 
         return (
@@ -158,8 +170,16 @@ class D3Chloropleth extends React.Component {
                 <div id="tooltip" ref={this.tooltipRef}></div>
                 <h1 id="title">United States Education Level by County</h1>
                 <h2 id="description">Percentage of adults age 25 and older with a bachelor's degree or higher (2010-2014)</h2>
-                <div id="container">
-                    <svg width={width} height={height} ref={this.svgRef} preserveAspectRatio="xMidYMid meet"></svg>
+                <div id="container" style={{width: '100%',height: window.innerHeight}}>
+                    <svg width={width} height={height} ref={this.svgRef}>
+                        <g>
+                            {
+                                this.geojson.features ? this.geojson.features.map((path, i) => {
+                                    return <path key={i} d={this.path(path)} fill={this.fillColor(path)} stroke="#222" />
+                                }) : null
+                            }
+                        </g>
+                    </svg>
                 </div>
                 <div id="legend" ref={this.legendRef}>
                     <h1>Level of Education</h1>
