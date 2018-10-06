@@ -87,6 +87,11 @@ module.exports = {
           {
               test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
               loader: 'file-loader'
+          },
+          {
+              test: /\.(png|jp(e*)g|gif)$/,
+              exclude: /(node_modules|bower_components)/,
+              use: [{loader:'file-loader',options: {name: 'images/[name].[ext]'}}]
           }
       ]
   },

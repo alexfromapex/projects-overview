@@ -1,0 +1,5 @@
+/* Main App CSS */
+::selection {
+    background-color: orange;
+    color: #FFF;
+}
