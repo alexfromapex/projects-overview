@@ -6,6 +6,7 @@ import fetch from 'isomorphic-fetch';
 import * as topojson from 'topojson-client';
 const d3 = Object.assign({},require('d3'),require('d3-geo'));
 import {event as d3Event} from 'd3';
+import Loading from '../../LoadingSpinner/LoadingSpinner';
 
 class D3Chloropleth extends React.Component {
 
@@ -26,7 +27,7 @@ class D3Chloropleth extends React.Component {
         //     }
         // });
         this.projection = d3.geoMercator();
-        this.path = d3.geoPath().fitWidth(this.baseWidth);
+        this.path = d3.geoPath();
 
         this.state = {
             tooltip: {
@@ -223,7 +224,7 @@ class D3Chloropleth extends React.Component {
     }
 
     render() {
-        return this.state.map.loading ? (<React.Fragment>Loading...</React.Fragment>) : (
+        return this.state.map.loading ? <Loading /> : (
             <div className="d3-chloropleth open-sans-font">
                 <h1 id="title">United States Education Level by County</h1>
                 <h2 id="description">Percentage of adults age 25 and older with a bachelor's degree or higher (2010-2014)</h2>

@@ -1,5 +1,6 @@
 /** Style Resources **/
 /* App-level CSS modules */
+import './css/_shared.scss';
 import './css/index.css';
 /* Bulma CSS framework */
 import './css/bulma.min.css';
@@ -11,12 +12,18 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 /* React Router */
 import { Switch, HashRouter, Route, Link } from 'react-router-dom';
+/* React Loadable */
+import Loadable from 'react-loadable';
+import {LoadingSpinner} from './components/LoadingSpinner/LoadingSpinner';
 
 /** Components **/
-/* CertificationList component */
-import {CertificationList} from './components/CertificationList/CertificationList';
-/* ProjectList component */
-import {ProjectList} from './components/ProjectList/ProjectList';
+/* List component */
+const LoadableList = Loadable({
+    loader: () => import('./components/List/List'),
+    loading: () => <LoadingSpinner />,
+    delay: 150
+});
+
 /* ProjectModal component */
 import {ProjectModal} from './components/ProjectModal/ProjectModal';
 /* D3 Components */
@@ -37,8 +44,8 @@ ReactDOM.render(
         <Switch>
             <Route exact path='/'>
                 <React.Fragment>
-                    <ProjectList projects={projects} />
-                    <CertificationList certifications={certifications} />
+                    <LoadableList list_type="project" list_elements={projects} />
+                    <LoadableList list_type="certification" list_elements={certifications} />
                 </React.Fragment>
             </Route>
             <Route exact path='/d3/chloropleth'>

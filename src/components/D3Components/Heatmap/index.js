@@ -5,6 +5,7 @@ import './D3Heatmap.scss';
 import fetch from 'isomorphic-fetch';
 const d3 = Object.assign({},require('d3'),require('d3-scale'),require('d3-selection-multi'));
 import {event as d3Event} from 'd3';
+import Loading from '../../LoadingSpinner/LoadingSpinner';
 
 class D3Heatmap extends React.Component {
 
@@ -16,6 +17,10 @@ class D3Heatmap extends React.Component {
 
         this.rects = [];
         this.tooltip = {};
+
+        this.state = {
+            loading: true
+        };
 
         this.calculateRects = this.calculateRects.bind(this);
         this.tooltipShowData = this.tooltipShowData.bind(this);
@@ -37,7 +42,10 @@ class D3Heatmap extends React.Component {
 
     componentDidMount() {
 
-      d3.json('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/global-temperature.json').then(data => {
+      this.dataAbortController = new AbortController();
+      fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/global-temperature.json',{signal: this.dataAbortController.signal})
+      .then(json => json.json())
+      .then(data => {
 
         this.dataset = data;
 
@@ -76,6 +84,7 @@ class D3Heatmap extends React.Component {
             .attr('transform','translate(0,'+(this.svgHeight-(this.padding))+')');
 
 
+        this.setState({...this.state,loading: false});
         this.calculateRects();
 
 
@@ -90,6 +99,12 @@ class D3Heatmap extends React.Component {
         });
       });
 
+    }
+
+    componentWillUnmount() {
+        if(this.dataAbortController) {
+            this.dataAbortController.abort();
+        }
     }
 
     dateFromData(data) {
@@ -190,6 +205,10 @@ class D3Heatmap extends React.Component {
         const tooltipX = this.tooltip ? this.tooltip.x : 0;
         const tooltipY = this.tooltip ? this.tooltip.y : 0;
         const tooltipShow = this.tooltip ? this.tooltip.show ? 0.7 : 0 : 0;
+
+        if(this.state.loading) {
+            return <Loading />
+        }
 
         return (
             <div className="d3-heatmap">

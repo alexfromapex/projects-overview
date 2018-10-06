@@ -8,7 +8,7 @@ export default [
         description: 'I was one of two database architects that designed the MySQL database schema for Illuminate, Brooks Bell\'s first public product.  I have also helped support the Illuminate team with ad hoc front-end development requests, using React, Redux, Bulma for CSS, interfacing with back-end Redis APIs, and collaborating through various BitBucket repositories.',
         icon: 'fa-lightbulb',
         link_text: `${read_more}`,
-        tags: ['React','Redux','HOCs','MySQL','Bulma','APIs','Bitbucket']
+        tags: ['React','Redux','MySQL','Bulma','Bitbucket']
     },
     {
         short_name: 'hue_controller',
@@ -27,7 +27,7 @@ export default [
         description: `Using D3.js, as one of the five projects for obtaining my data visualization certification from FreeCodeCamp, I created a chloropleth map.`,
         icon: 'fa-map',
         link_text: `${read_more}`,
-        tags: ['D3.js','API','ReactJS','Lifecycle Methods','JSX','CSS Modules']
+        tags: ['D3.js','ReactJS']
     },
     {
         short_name: 'd3/heatmap',
@@ -36,7 +36,7 @@ export default [
         description: `Using D3.js, I created a heatmap using variance from the mean to show a warming trend over a period of approximately 200 years.`,
         icon: 'fa-chart-bar',
         link_text: `${read_more}`,
-        tags: ['D3.js','API','ReactJS','Lifecycle Methods','JSX','CSS Modules']
+        tags: ['D3.js','ReactJS']
     },
     {
         short_name: 'target_api',
@@ -45,7 +45,7 @@ export default [
         description: `As part of Brooks Bell's internal initiative to increase efficiency, I created a piece of Node software to interface with the Adobe Marketing Cloud API that allows easy communication, automation, and interaction with Adobe Target, one of the primary tools in the day-to-day business. I used Node and Express to create a web application that authenticates via JSON Web Tokens. The authentication mechanism is handled by the web application, allowing Brooks Bell to quickly and easily utilize the API via numerous pieces of software.`,
         icon:'fa-server',
         link_text: `${read_more}`,
-        tags: ['Node','APIs','JWT','OAuth']
+        tags: ['Node','JWT','OAuth']
     },
     {
         short_name: 'click_wordpress',

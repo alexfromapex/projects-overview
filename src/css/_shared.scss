@@ -1,16 +1,16 @@
-$theme_primary_color: black;
-$theme_secondary_color: orange;
+@import './_theme.scss';
 
-@mixin list($type) {
-    .#{$type}-list {
+.list {
+    [class*="-list"] {
         .header {
             font-size: 20px;
             font-weight: 700;
             margin-top: 1em;
             padding: 10px;
+            text-transform: capitalize;
         }
     }
-    .#{$type} {
+    .list-item {
         // .#{$type}-description {
         //     margin-bottom: 1em;
         // }
