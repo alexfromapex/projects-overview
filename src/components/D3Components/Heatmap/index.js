@@ -87,24 +87,24 @@ class D3Heatmap extends React.Component {
         this.setState({...this.state,loading: false});
         this.calculateRects();
 
-
-        /* Window resize handler */
-        let debounce = null;
-        window.addEventListener('resize',() => {
-            clearTimeout(debounce);
-            debounce = setTimeout(() => {
-                this.calculateRects();
-                console.log('window resize');
-            },50);
-        });
       });
 
+      this.debounceSettimeoutId = null;
+      this.debounceResize = () => {
+          clearTimeout(this.debounceSettimeoutId);
+          this.debounceSettimeoutId = setTimeout(() => {
+              this.calculateRects();
+          },250);
+      };
+      window.addEventListener('resize',this.debounceResize);
     }
 
     componentWillUnmount() {
         if(this.dataAbortController) {
             this.dataAbortController.abort();
         }
+
+        window.removeEventListener('resize',this.debounceResize);
     }
 
     dateFromData(data) {
@@ -212,6 +212,7 @@ class D3Heatmap extends React.Component {
 
         return (
             <div className="d3-heatmap">
+                <Link to="/" title="Back to projects list" className="fa fa-arrow-left back-arrow"></Link>
                 <div id="tooltip" ref={this.tooltipRef} style={{left:tooltipX,top:tooltipY,opacity:tooltipShow}}>
                     {this.tooltip.temp}<br/>{this.tooltip.month}
                 </div>

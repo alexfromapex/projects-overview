@@ -1,0 +1,6 @@
+@import '_theme.scss';
+/* Main App CSS */
+::selection {
+    background-color: $theme_secondary_color;
+    color: $theme_background_color;
+}

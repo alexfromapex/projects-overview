@@ -18,7 +18,7 @@ class List extends React.PureComponent {
                             _map(list_elements,(element,idx) => {
                                 return (
                                     <div key={`${list_type}-${idx}`} className={`${list_type} list-item container is-fluid`}>
-                                        <h5 key={`header-${idx}`}><span className={`fa `+element.icon}></span>&nbsp;{element.title}</h5>
+                                        <h5 key={`header-${idx}`}><span className={`list-icon fa `+element.icon}></span>{element.title}</h5>
                                         <p key={`p-${idx}`} className={`${list_type}-description`}>
                                             {element.description}
                                         </p>

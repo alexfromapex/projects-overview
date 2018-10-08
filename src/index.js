@@ -1,7 +1,6 @@
 /** Style Resources **/
 /* App-level CSS modules */
-import './css/_shared.scss';
-import './css/index.css';
+import './css/index.scss';
 /* Bulma CSS framework */
 import './css/bulma.min.css';
 /* FontAwesome 5 */
@@ -25,16 +24,24 @@ const LoadableList = Loadable({
 });
 
 /* ProjectModal component */
-import {ProjectModal} from './components/ProjectModal/ProjectModal';
+import {Modal} from './components/Modal/Modal';
 /* D3 Components */
 import {D3Chloropleth} from './components/D3Components/Chloropleth';
 import {D3Heatmap} from './components/D3Components/Heatmap';
 
 /** Data files **/
-/* Project data file */
-import projects from './data/projects';
+/* Work Projects data file */
+import work_projects from './data/work_projects';
+/* Side Projects data file */
+import side_projects from './data/side_projects';
 /* Certification data file */
 import certifications from './data/certifications';
+
+const all_data_items = [
+    ...work_projects,
+    ...side_projects,
+    ...certifications
+];
 
 /* Render React */
 ReactDOM.render(
@@ -44,7 +51,8 @@ ReactDOM.render(
         <Switch>
             <Route exact path='/'>
                 <React.Fragment>
-                    <LoadableList list_type="project" list_elements={projects} />
+                    <LoadableList list_type="work project" list_elements={work_projects} />
+                    <LoadableList list_type="side project" list_elements={side_projects} />
                     <LoadableList list_type="certification" list_elements={certifications} />
                 </React.Fragment>
             </Route>
@@ -54,7 +62,7 @@ ReactDOM.render(
             <Route exact path='/d3/heatmap'>
                 <D3Heatmap title="Monthly Global Land-Surface Temperature" description="1753 - 2015: base temperature 8.66℃" />
             </Route>
-            <Route path='/:project_id' render={(props) => <ProjectModal {...props} projects={projects} />} />
+            <Route path='/:modal_data_id' render={(props) => <Modal data_items={all_data_items} {...props} />} />
         </Switch>
     </HashRouter>
     </div>),document.getElementById('projects-app'));

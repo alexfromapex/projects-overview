@@ -1,4 +1,11 @@
+@import '../../../css/_theme.scss';
+
 .d3-heatmap {
+    .back-arrow {
+        margin-left: 20px;
+        margin-top: 20px;
+        color: $theme_primary_color;
+    }
     #title {
         margin-top: 1em;
     }
