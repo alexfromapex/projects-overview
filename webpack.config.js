@@ -46,7 +46,7 @@ module.exports = {
   output: {
       filename: process.env.WEBPACK_BUILD_ENV === 'development' ? '[name].bundle.[hash:6].js' : '[name].bundle.js',
       path: path.resolve(__dirname, process.env.WEBPACK_BUILD_DIRECTORY),
-      publicPath: '/'
+      publicPath: process.env.WEBPACK_BUILD_ENV === 'development' ? '/' : '/projects-overview/'
   },
   // Define module rules and loaders
   module: {
